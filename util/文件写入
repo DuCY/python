@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+
+def writeToFile(path, list):
+    print('>>>>>>>>>>start writeToFile')
+    with open(path, 'w') as f:
+        for l in list:
+            f.writelines(l + '\n')
