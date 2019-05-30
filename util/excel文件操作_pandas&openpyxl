@@ -1,0 +1,68 @@
+#!/usr/bin/env python3
+
+from openpyxl import load_workbook
+import pandas as pd
+
+df_out1 = pd.DataFrame([('string1', 1), ('string2', 2), ('string3', 3)],
+                       columns=['name', 'value'])
+df_out1.to_excel('tmp1.xlsx', index=False)
+
+df_out2 = pd.DataFrame([('string1', 1), ('string2', 2), ('string3', 3)])
+df_out2.to_excel('tmp2.xlsx', index=False, header=None)
+
+writer3 = pd.ExcelWriter('tmp2.xlsx')
+df_out3 = pd.DataFrame([('string4', 4), ('string5', 5), ('string6', 6)])
+df_out3_copy = df_out3.copy()
+df_out3.to_excel(excel_writer=writer3, sheet_name='Sheet1', index=False, header=None)
+df_out3_copy.to_excel(excel_writer=writer3, sheet_name='Sheet1', index=False, header=None)
+writer3.save()
+writer3.close()
+
+writer4 = pd.ExcelWriter('tmp2.xlsx')
+book4 = load_workbook('tmp2.xlsx')
+writer4.book = book4
+writer4.sheets = dict((ws.title, ws) for ws in book4.worksheets)
+df_out4 = pd.DataFrame([('string4', 4), ('string5', 5), ('string6', 6)])
+df_out4.to_excel(excel_writer=writer4, sheet_name='Sheet2', index=False, header=None, startrow=4)
+writer4.save()
+writer4.close()
+
+df = pd.read_excel('lianxi.xlsx', sheet_name=1)
+# 获取最大行、最大列
+nrows = df.shape[0]
+ncols = df.columns.size
+print('Max Rows: ' + str(nrows))
+print('Max columns: ' + str(ncols))
+# 显示列名，以列表形式显示
+print(df.columns)
+for i in df.columns:
+    print(i)
+# 显示列名，并显示列表的序号
+for iCol in range(ncols):
+    print(str(iCol), ': ', df.columns[iCol])
+
+# 列出特定行列，单元格的值
+print(df.iloc[0, 0])
+print(df.iloc[0, q])
+
+# 查看第3列的内容，列的序号从0开始
+sColumnName = df.columns[2]
+print(df[sColumnName])
+
+# 查看某行的内容
+iRow = 1
+for iCol in range(ncols):
+    print(df.iloc[iRow, iCol])
+
+# 遍历逐行逐列
+for iRow in range(nrows):
+    for iCol in range(ncols):
+        print(df.iloc[iRow, iCol])
+
+# 不把第1行作为列名，读取EXCEL那就没有列名，需增加参数，header=None
+df = pd.read_excel('lianxi.xlsx', sheet_name=1, header=None)
+
+writer5 = pd.ExcelWriter('output.xlsx')
+df5 = pd.DataFrame(data={'col1': [1, 1], 'col2': [2, 2]})
+df5.to_excel(writer5, 'Sheet1')
+writer5.save()
